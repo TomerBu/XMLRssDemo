@@ -13,6 +13,7 @@
         android:layout_height="72dp"
         android:clickable="false"
         android:gravity="center_vertical"
+        android:padding="10dp"
 
 
         android:paddingLeft="80dp"
@@ -24,6 +25,7 @@
         android:id="@+id/itemImage"
         android:layout_width="72dp"
         android:layout_height="72dp"
+        android:layout_marginLeft="4dp"
         android:clickable="false"
         android:padding="4dp"
         android:scaleType="centerCrop"

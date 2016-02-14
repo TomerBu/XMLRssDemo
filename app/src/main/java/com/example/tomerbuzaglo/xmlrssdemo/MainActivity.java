@@ -2,6 +2,8 @@ package com.example.tomerbuzaglo.xmlrssdemo;
 
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.AnticipateOvershootInterpolator;
 import android.view.animation.OvershootInterpolator;
+import android.widget.ImageView;
 
 import com.example.tomerbuzaglo.xmlrssdemo.adapters.YnetRecyclerViewAdapter;
 import com.example.tomerbuzaglo.xmlrssdemo.eventbus.BusProvider;
@@ -30,6 +33,12 @@ public class MainActivity extends AppCompatActivity {
     CoordinatorLayout coord;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+    @Bind(R.id.ivHeader)
+    ImageView ivHeader;
+    @Bind(R.id.collapsingToolbarLayout)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+    @Bind(R.id.appbar)
+    AppBarLayout appbar;
     private YnetRecyclerViewAdapter adapter;
 
     @Override
@@ -42,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
 
         BusProvider.getInstance().register(this);
         YnetRssApi api = new YnetRssApi();
-
-
         api.getAllItems();
     }
 
@@ -71,8 +78,6 @@ public class MainActivity extends AppCompatActivity {
         aAdapter.setInterpolator(new OvershootInterpolator(.5f));*/
 
 
-
-
         AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(adapter);
         alphaAdapter.setDuration(100);
         alphaAdapter.setInterpolator(new AnticipateOvershootInterpolator(1f));
@@ -81,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
         ScaleInAnimationAdapter scaleAndAlpahAdapter = new ScaleInAnimationAdapter(alphaAdapter);
         scaleAndAlpahAdapter.setDuration(250);
         scaleAndAlpahAdapter.setInterpolator(new OvershootInterpolator(.4f));
-
 
 
         rvYnet.setAdapter(scaleAndAlpahAdapter);

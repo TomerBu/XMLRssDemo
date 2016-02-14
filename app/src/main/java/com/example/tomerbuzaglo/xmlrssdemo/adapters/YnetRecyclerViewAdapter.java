@@ -6,13 +6,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.tomerbuzaglo.xmlrssdemo.R;
 import com.example.tomerbuzaglo.xmlrssdemo.model.Item;
 import com.example.tomerbuzaglo.xmlrssdemo.model.Rss;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 
 public class YnetRecyclerViewAdapter extends RecyclerView.Adapter<YnetRecyclerViewAdapter.YnetViewHolder> {
@@ -44,23 +49,29 @@ public class YnetRecyclerViewAdapter extends RecyclerView.Adapter<YnetRecyclerVi
     @Override
     public void onBindViewHolder(YnetViewHolder holder, int position) {
         Item item = items.get(position);
+        item.extractDescription();
+
+
         holder.tvContent.setText(item.getTitle());
+        Picasso.with(context).load(item.getImage()).error(R.drawable.ic_failed).placeholder(R.drawable.ic_placeholder).into(holder.itemImage);
+
     }
 
     static class YnetViewHolder extends RecyclerView.ViewHolder {
-        // @Bind(R.id.tvContent)
+        @Bind(R.id.tvContent)
         TextView tvContent;
+
+        @Bind(R.id.itemImage)
+        ImageView itemImage;
 
         public YnetViewHolder(View itemView) {
             super(itemView);
-            tvContent = (TextView) itemView.findViewById(R.id.tvContent);
+            ButterKnife.bind(this, itemView);
+
             Typeface face = Typeface.createFromAsset(itemView.getContext().getAssets(), "SimpleCLM-Medium.ttf");
             face = Typeface.createFromAsset(itemView.getContext().getAssets(), "ElliniaCLM-Light.ttf");
 
             tvContent.setTypeface(face);
-
-
-            //ButterKnife.bind(this, itemView);
         }
     }
 }

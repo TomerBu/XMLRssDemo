@@ -1,5 +1,7 @@
 package com.example.tomerbuzaglo.xmlrssdemo.model;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
@@ -23,9 +25,19 @@ public class Item {
     @Element(required = false, data = true)
     private String description;
 
+
     @Element(required = false, data = true)
     private String link;
 
+    /**
+     * Calculated fields:
+     **/
+    private String image;
+    private String article;
+    private String articleLink;
+
+
+    //Getters and setters for Simple XML:
 
     public String getGuid() {
         return guid;
@@ -75,6 +87,7 @@ public class Item {
         this.description = description;
     }
 
+
     public String getLink() {
         return link;
     }
@@ -94,5 +107,43 @@ public class Item {
                 ", description='" + description + '\'' +
                 ", link='" + link + '\'' +
                 '}';
+    }
+
+
+    /**
+     * Extracted Fields:
+     */
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getArticle() {
+        return article;
+    }
+
+    public void setArticle(String article) {
+        this.article = article;
+    }
+
+    public String getArticleLink() {
+        return articleLink;
+    }
+
+    public void setArticleLink(String articleLink) {
+        this.articleLink = articleLink;
+    }
+
+    public void extractDescription() {
+        String HTMLSTring = this.getDescription();
+        Document html = Jsoup.parse(HTMLSTring);
+        setArticle(html.body().text());
+        setImage(html.getElementsByTag("img").first().attr("src"));
+        setArticleLink(html.getElementsByTag("a").first().attr("href"));
+
     }
 }
