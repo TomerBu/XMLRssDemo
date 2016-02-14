@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">XMLRssDemo</string>
+    <string name="rv_image_heading_content_description">Headings</string>
 </resources>
