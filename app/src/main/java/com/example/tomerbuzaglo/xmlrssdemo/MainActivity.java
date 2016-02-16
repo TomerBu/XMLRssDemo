@@ -17,13 +17,15 @@ import android.view.View;
 import android.view.animation.AnticipateOvershootInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.tomerbuzaglo.xmlrssdemo.adapters.YnetRecyclerViewAdapter;
 import com.example.tomerbuzaglo.xmlrssdemo.eventbus.BusProvider;
 import com.example.tomerbuzaglo.xmlrssdemo.eventbus.YnetEvent;
+import com.example.tomerbuzaglo.xmlrssdemo.model.Item;
 import com.example.tomerbuzaglo.xmlrssdemo.rssapi.YnetRssApi;
 import com.squareup.otto.Subscribe;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private YnetRecyclerViewAdapter adapter;
     private SearchView mSearchView;
     private MenuItem searchMenuItem;
+    private List<Item> items;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +66,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe
     public void newData(YnetEvent event) {
+
         this.adapter = new YnetRecyclerViewAdapter(event.getRss(), this);
+
         rvYnet.setLayoutManager(new LinearLayoutManager(this));
         rvYnet.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
@@ -132,10 +137,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public boolean onQueryTextChange(String newText) {
+        public boolean onQueryTextChange(String query) {
             // newText is text entered by user to SearchView
-            Toast.makeText(getApplicationContext(), newText, Toast.LENGTH_LONG).show();
-            return false;
+            adapter.doSearch(query);
+            return true;
         }
     };
 }
