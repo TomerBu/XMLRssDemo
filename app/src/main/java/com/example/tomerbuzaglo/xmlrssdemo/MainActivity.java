@@ -2,6 +2,7 @@ package com.example.tomerbuzaglo.xmlrssdemo;
 
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -24,6 +25,7 @@ import com.example.tomerbuzaglo.xmlrssdemo.eventbus.YnetEvent;
 import com.example.tomerbuzaglo.xmlrssdemo.model.Item;
 import com.example.tomerbuzaglo.xmlrssdemo.rssapi.YnetRssApi;
 import com.squareup.otto.Subscribe;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -31,6 +33,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import jp.wasabeef.recyclerview.adapters.AlphaInAnimationAdapter;
 import jp.wasabeef.recyclerview.adapters.ScaleInAnimationAdapter;
+import tomerbu.edu.recyclerviewhelper.VerticalScrollSupport;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,10 +49,13 @@ public class MainActivity extends AppCompatActivity {
     CollapsingToolbarLayout collapsingToolbarLayout;
     @Bind(R.id.appbar)
     AppBarLayout appbar;
+
     private YnetRecyclerViewAdapter adapter;
     private SearchView mSearchView;
     private MenuItem searchMenuItem;
     private List<Item> items;
+    private YnetRssApi api;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,27 +64,46 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-
+        handler = new Handler();
         BusProvider.getInstance().register(this);
-        YnetRssApi api = new YnetRssApi();
+        api = new YnetRssApi();
         api.getAllItems();
+        setupRecyclerView();
+        //setupPullToRefresh();
     }
 
-    @Subscribe
-    public void newData(YnetEvent event) {
-
-        this.adapter = new YnetRecyclerViewAdapter(event.getRss(), this);
-
+    private void setupRecyclerView() {
         rvYnet.setLayoutManager(new LinearLayoutManager(this));
+
+        VerticalScrollSupport.addTo(rvYnet).setOnPullToRefreshListener(new VerticalScrollSupport.OnPullToRefresh() {
+            @Override
+            public void onPullToRefresh() {
+                appbar.setExpanded(true, true);
+                api.getAllItems();
+            }
+        });
         rvYnet.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
                 outRect.set(20, 0, 20, 50);
             }
         });
+    }
 
-        ScaleInAnimationAdapter scaleAndAlpahAdapter = addAnimations();
-        rvYnet.setAdapter(scaleAndAlpahAdapter);
+    @Subscribe
+    public void newData(YnetEvent event) {
+        if (adapter == null) {
+            adapter = new YnetRecyclerViewAdapter(event.getRss(), this);
+            ScaleInAnimationAdapter scaleAndAlpahAdapter = addAnimations();
+            rvYnet.setAdapter(scaleAndAlpahAdapter);
+        } else
+            adapter.refreshData(event.getRss());
+
+        Item item = event.getRss().getChannel().getItems().get(0);
+        if (item.hasImage()) {
+            String url = item.getImage();
+            Picasso.with(this).load(url).into(ivHeader);
+        }
     }
 
     @NonNull
@@ -139,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onQueryTextChange(String query) {
             // newText is text entered by user to SearchView
-            adapter.doSearch(query);
+            adapter.performSearch(query);
             return true;
         }
     };

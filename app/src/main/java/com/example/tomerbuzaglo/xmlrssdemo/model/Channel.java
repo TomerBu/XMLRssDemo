@@ -15,7 +15,7 @@ public class Channel {
 
     /*@Path(value = "title")*/
     @Path("title")
-    @Text(required=false, data = true)
+    @Text(required = false, data = true)
     //@Element(name = "title", required = false, data = true)
     private String title;
 
@@ -24,7 +24,7 @@ public class Channel {
 
     //@Element(required = false, data = true)
     @Path("link")
-    @Text(required=false, data = true)
+    @Text(required = false, data = true)
     private String link;
 
     @Element(required = false, data = true)
@@ -108,6 +108,9 @@ public class Channel {
 
     //Get the items!
     public List<Item> getItems() {
+        for (Item item : items) {
+            item.extractDescription();
+        }
         return items;
     }
 

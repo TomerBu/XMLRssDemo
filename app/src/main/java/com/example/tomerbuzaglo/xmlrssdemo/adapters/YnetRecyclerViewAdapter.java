@@ -34,7 +34,10 @@ public class YnetRecyclerViewAdapter extends RecyclerView.Adapter<YnetRecyclerVi
         this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         this.originalItems = rss.getChannel().getItems();
-        this.adapterLocalItems = (Rss.fromJson(rss.json())).getChannel().getItems(); //copy using json serialization and deserialization. this can be more efficiently done with Parcelable interface, but will add tons of code.
+        //copy using json serialization and deserialization.
+        //TODO:this can be more efficiently done with Parcelable interface, but will add tons of code.
+        this.adapterLocalItems = (Rss.fromJson(rss.json())).getChannel().getItems();
+
     }
 
 
@@ -53,15 +56,15 @@ public class YnetRecyclerViewAdapter extends RecyclerView.Adapter<YnetRecyclerVi
     @Override
     public void onBindViewHolder(YnetViewHolder holder, int position) {
         Item item = adapterLocalItems.get(position);
-        item.extractDescription();
 
 
         holder.tvContent.setText(item.getTitle());
-        Picasso.with(context).load(item.getImage()).error(R.drawable.ic_failed).placeholder(R.drawable.ic_placeholder).into(holder.itemImage);
+        if (item.hasImage())
+            Picasso.with(context).load(item.getImage()).error(R.drawable.ic_failed).placeholder(R.drawable.ic_placeholder).into(holder.itemImage);
     }
 
     /**
-     * Add an Item to adapterLocalItems and notify the adapter
+     * Add an Item to {@code adapterLocalItems} and notify the adapter
      */
     private void addItem(int position, Item item) {
         adapterLocalItems.add(position, item);
@@ -169,7 +172,7 @@ public class YnetRecyclerViewAdapter extends RecyclerView.Adapter<YnetRecyclerVi
      *
      * @param query The Search Query
      */
-    public void doSearch(String query) {
+    public void performSearch(String query) {
         List<Item> filteredList = filter(originalItems, query);
         this.applySearchFilters(filteredList);
         if (recyclerView != null) {
@@ -181,6 +184,10 @@ public class YnetRecyclerViewAdapter extends RecyclerView.Adapter<YnetRecyclerVi
     public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         this.recyclerView = recyclerView;
+    }
+
+    public void refreshData(Rss rss) {
+        applySearchFilters(rss.getChannel().getItems());
     }
 
     static class YnetViewHolder extends RecyclerView.ViewHolder {

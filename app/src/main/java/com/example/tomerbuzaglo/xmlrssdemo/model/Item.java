@@ -138,12 +138,16 @@ public class Item {
         this.articleLink = articleLink;
     }
 
-    public void extractDescription() {
+    public Item extractDescription() {
         String HTMLSTring = this.getDescription();
         Document html = Jsoup.parse(HTMLSTring);
         setArticle(html.body().text());
         setImage(html.getElementsByTag("img").first().attr("src"));
         setArticleLink(html.getElementsByTag("a").first().attr("href"));
+        return this;
+    }
 
+    public boolean hasImage() {
+        return this.getImage() != null && !getImage().isEmpty();
     }
 }
