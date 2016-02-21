@@ -1,8 +1,7 @@
-package com.example.tomerbuzaglo.xmlrssdemo;
+package com.example.tomerbuzaglo.xmlrssdemo.activities;
 
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -19,16 +18,14 @@ import android.view.animation.AnticipateOvershootInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 
-import com.example.tomerbuzaglo.xmlrssdemo.adapters.YnetRecyclerViewAdapter;
+import com.example.tomerbuzaglo.xmlrssdemo.R;
+import com.example.tomerbuzaglo.xmlrssdemo.adapters.NewsRecyclerViewAdapter;
 import com.example.tomerbuzaglo.xmlrssdemo.eventbus.BusProvider;
-import com.example.tomerbuzaglo.xmlrssdemo.eventbus.YnetEvent;
+import com.example.tomerbuzaglo.xmlrssdemo.eventbus.RssEvent;
 import com.example.tomerbuzaglo.xmlrssdemo.model.Item;
 import com.example.tomerbuzaglo.xmlrssdemo.rssapi.YnetRssApi;
-import com.example.tomerbuzaglo.xmlrssdemo.utils.ConnectivityHelper;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
-
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -51,12 +48,10 @@ public class MainActivity extends AppCompatActivity {
     @Bind(R.id.appbar)
     AppBarLayout appbar;
 
-    private YnetRecyclerViewAdapter adapter;
+    private NewsRecyclerViewAdapter adapter;
     private SearchView mSearchView;
     private MenuItem searchMenuItem;
-    private List<Item> items;
     private YnetRssApi api;
-    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,12 +60,10 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        handler = new Handler();
         BusProvider.getInstance().register(this);
         api = new YnetRssApi();
         api.getAllItems();
         setupRecyclerView();
-        //setupPullToRefresh();
     }
 
     private void setupRecyclerView() {
@@ -92,9 +85,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe
-    public void newData(YnetEvent event) {
+    public void newData(RssEvent event) {
         if (adapter == null) {
-            adapter = new YnetRecyclerViewAdapter(event.getRss(), this);
+            adapter = new NewsRecyclerViewAdapter(event.getRss(), this);
             ScaleInAnimationAdapter scaleAndAlpahAdapter = addAnimations();
             rvYnet.setAdapter(scaleAndAlpahAdapter);
         } else
@@ -132,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        ConnectivityHelper.registerDefault(this);
         super.onResume();
     }
 
@@ -145,6 +137,22 @@ public class MainActivity extends AppCompatActivity {
         mSearchView.setOnQueryTextListener(listener);
         return true;
     }
+
+
+
+    SearchView.OnQueryTextListener listener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String query) {
+            // newText is text entered by user to SearchView
+            adapter.performSearch(query);
+            return true;
+        }
+    };
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -160,18 +168,4 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    SearchView.OnQueryTextListener listener = new SearchView.OnQueryTextListener() {
-        @Override
-        public boolean onQueryTextSubmit(String query) {
-            return false;
-        }
-
-        @Override
-        public boolean onQueryTextChange(String query) {
-            // newText is text entered by user to SearchView
-            adapter.performSearch(query);
-            return true;
-        }
-    };
 }

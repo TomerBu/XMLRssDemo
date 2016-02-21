@@ -5,7 +5,7 @@ import com.example.tomerbuzaglo.xmlrssdemo.model.Rss;
 /**
  * Created by tomerbuzaglo on 14/02/2016.
  */
-public class YnetEvent {
+public class RssEvent {
     private Rss rss;
 
     public Rss getRss() {
@@ -16,7 +16,7 @@ public class YnetEvent {
         this.rss = rss;
     }
 
-    public YnetEvent(Rss rss) {
+    public RssEvent(Rss rss) {
 
         this.rss = rss;
     }

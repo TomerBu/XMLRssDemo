@@ -13,10 +13,9 @@ import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 
-/**
- * Created by tomerbuzaglo on 18/02/2016.
- */
+
 public class AppManager extends Application {
     public static AppManager instance;
     private OkHttpClient client;
@@ -24,6 +23,7 @@ public class AppManager extends Application {
     @Override
     public void onCreate() {
         instance = this;
+        ConnectivityHelper.registerDefault(this);
         super.onCreate();
     }
 
@@ -39,18 +39,27 @@ public class AppManager extends Application {
 
             Cache cache = new Cache(httpCacheDirectory, cacheSize);
 
+            //Logging Interceptor, added to the client
+            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+
             OkHttpClient client = new OkHttpClient.Builder()
                     .cache(cache)
                     .connectTimeout(30, TimeUnit.SECONDS)
                     .readTimeout(30, TimeUnit.SECONDS)
                     .addNetworkInterceptor(mCacheControlInterceptor)
-
+                   // .addInterceptor(logging)  // <-- add logging as LAST! interceptor
                     .build();
             this.client = client;
         }
         return client;
     }
 
+
+    private void f() {
+
+    }
 
     private static final Interceptor mCacheControlInterceptor = new Interceptor() {
         @Override

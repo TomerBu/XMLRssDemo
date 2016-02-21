@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_ynet"
+            android:icon="@mipmap/ic_ynet"
+            android:title="Ynet" />
+        <item
+            android:id="@+id/nav_walla"
+            android:icon="@mipmap/ic_walla"
+            android:title="Walla News" />
+        <item
+            android:id="@+id/nav_haretz"
+            android:icon="@mipmap/ic_haretz"
+            android:title="Haretz" />
+        <item
+            android:id="@+id/nav_rotter"
+            android:icon="@mipmap/ic_rotter"
+            android:title="Rotter" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Send" />
+        </menu>
+    </item>
+
+</menu>

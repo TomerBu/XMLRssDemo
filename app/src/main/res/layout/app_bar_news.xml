@@ -2,13 +2,10 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/coord"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-
-    tools:context="com.example.tomerbuzaglo.xmlrssdemo.activities.MainActivity">
-
+    tools:context="com.example.tomerbuzaglo.xmlrssdemo.activities.NewsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
@@ -52,8 +49,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-
-    <include layout="@layout/content_main" />
+    <include layout="@layout/content_news" />
 
     <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"

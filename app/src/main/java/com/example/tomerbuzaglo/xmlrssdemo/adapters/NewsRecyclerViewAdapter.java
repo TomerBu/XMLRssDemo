@@ -21,7 +21,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
-public class YnetRecyclerViewAdapter extends RecyclerView.Adapter<YnetRecyclerViewAdapter.YnetViewHolder> {
+public class NewsRecyclerViewAdapter extends RecyclerView.Adapter<NewsRecyclerViewAdapter.NewsViewHolder> {
 
     private final LayoutInflater layoutInflater;
     private final List<Item> adapterLocalItems;
@@ -29,7 +29,7 @@ public class YnetRecyclerViewAdapter extends RecyclerView.Adapter<YnetRecyclerVi
     private Context context;
     private RecyclerView recyclerView;
 
-    public YnetRecyclerViewAdapter(Rss rss, Context context) {
+    public NewsRecyclerViewAdapter(Rss rss, Context context) {
         this.context = context;
         this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -42,10 +42,10 @@ public class YnetRecyclerViewAdapter extends RecyclerView.Adapter<YnetRecyclerVi
 
 
     @Override
-    public YnetViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = layoutInflater.inflate(R.layout.rv_item_ynet, parent, false);
+    public NewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = layoutInflater.inflate(R.layout.rv_item_news, parent, false);
         this.recyclerView = (RecyclerView) parent;
-        return new YnetViewHolder(v);
+        return new NewsViewHolder(v);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class YnetRecyclerViewAdapter extends RecyclerView.Adapter<YnetRecyclerVi
     }
 
     @Override
-    public void onBindViewHolder(YnetViewHolder holder, int position) {
+    public void onBindViewHolder(NewsViewHolder holder, int position) {
         Item item = adapterLocalItems.get(position);
 
 
@@ -184,14 +184,14 @@ public class YnetRecyclerViewAdapter extends RecyclerView.Adapter<YnetRecyclerVi
         applySearchFilters(rss.getChannel().getItems());
     }
 
-    static class YnetViewHolder extends RecyclerView.ViewHolder {
+    static class NewsViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.tvContent)
         TextView tvContent;
 
         @Bind(R.id.itemImage)
         ImageView itemImage;
 
-        public YnetViewHolder(View itemView) {
+        public NewsViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             //setup font on tvContnent:

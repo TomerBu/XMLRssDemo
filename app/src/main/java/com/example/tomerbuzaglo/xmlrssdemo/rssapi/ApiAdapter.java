@@ -11,40 +11,42 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
-import retrofit2.http.GET;
-
-public class YnetRssApi {
-
-    private static long CACHE_SIZE = 10 * 1024 * 1024; // 10 MB
-
-    //The Apis root address without the node name: ...StoryRss2.xml/
-    public static final String API_URL = "http://www.ynet.co.il/Integration/";
 
 
-    private final Retrofit retrofit;
-    private final YnetService ynetService;
+public class ApiAdapter {
+
     private final Bus mBus;
 
-    public YnetRssApi() {
-        retrofit = new Retrofit.Builder().
-                baseUrl(API_URL).
+    private final Class<?> service;
+    private final Object mAPI;
+
+
+    public ApiAdapter(String baseUrl, Class<?> service) {
+        this.service = service;
+
+        Retrofit retrofit = new Retrofit.Builder().
+                baseUrl(baseUrl).
                 addConverterFactory(SimpleXmlConverterFactory.create()).
                 client(AppManager.instance.getClient()).
                 build();
 
         mBus = BusProvider.getInstance();
-        // Create an instance of our API interface.
-        ynetService = retrofit.create(YnetService.class);
-    }
-
-    public interface YnetService{
-        @GET("StoryRss2.xml")
-        Call<Rss> items();
+        mAPI = retrofit.create(service);
     }
 
     public void getAllItems() {
         // Create a call instance for looking up Retrofit contributors.
-        Call<Rss> call = ynetService.items();
+        Call<Rss> call = null;
+        if (mAPI instanceof YnetRssApi.YnetService) {
+
+            call = ((YnetRssApi.YnetService) mAPI).items();
+        } else if (mAPI instanceof WallaRssApi.WallaService) {
+            call = ((WallaRssApi.WallaService) mAPI).items();
+        }
+        else if (mAPI instanceof HaretzRssApi.HaretzService) {
+            call = ((HaretzRssApi.HaretzService) mAPI).items();
+        }
+        else return;
         call.enqueue(new Callback<Rss>() {
             @Override
             public void onResponse(Call<Rss> call, Response<Rss> response) {

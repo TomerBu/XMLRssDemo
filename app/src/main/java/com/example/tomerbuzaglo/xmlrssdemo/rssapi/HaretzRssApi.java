@@ -13,19 +13,18 @@ import retrofit2.Retrofit;
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory;
 import retrofit2.http.GET;
 
-public class YnetRssApi {
+public class HaretzRssApi {
 
     private static long CACHE_SIZE = 10 * 1024 * 1024; // 10 MB
 
-    //The Apis root address without the node name: ...StoryRss2.xml/
-    public static final String API_URL = "http://www.ynet.co.il/Integration/";
-
+    //The Apis root address without the node name:
+    public static final String API_URL = "http://www.haaretz.co.il/";
 
     private final Retrofit retrofit;
-    private final YnetService ynetService;
+    private final HaretzService wallaService;
     private final Bus mBus;
 
-    public YnetRssApi() {
+    public HaretzRssApi() {
         retrofit = new Retrofit.Builder().
                 baseUrl(API_URL).
                 addConverterFactory(SimpleXmlConverterFactory.create()).
@@ -34,17 +33,18 @@ public class YnetRssApi {
 
         mBus = BusProvider.getInstance();
         // Create an instance of our API interface.
-        ynetService = retrofit.create(YnetService.class);
+        wallaService = retrofit.create(HaretzService.class);
     }
 
-    public interface YnetService{
-        @GET("StoryRss2.xml")
+    public interface HaretzService {
+        //@GET("StoryRss2.xml")
+        @GET("cmlink/1.1617539")
         Call<Rss> items();
     }
 
     public void getAllItems() {
         // Create a call instance for looking up Retrofit contributors.
-        Call<Rss> call = ynetService.items();
+        Call<Rss> call = wallaService.items();
         call.enqueue(new Callback<Rss>() {
             @Override
             public void onResponse(Call<Rss> call, Response<Rss> response) {
