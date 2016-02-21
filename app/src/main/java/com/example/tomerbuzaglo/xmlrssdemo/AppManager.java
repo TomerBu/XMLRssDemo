@@ -12,6 +12,7 @@ import okhttp3.Cache;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by tomerbuzaglo on 18/02/2016.
@@ -42,7 +43,8 @@ public class AppManager extends Application {
                     .cache(cache)
                     .connectTimeout(30, TimeUnit.SECONDS)
                     .readTimeout(30, TimeUnit.SECONDS)
-                    .addInterceptor(mCacheControlInterceptor)
+                    .addNetworkInterceptor(mCacheControlInterceptor)
+
                     .build();
             this.client = client;
         }
@@ -52,26 +54,48 @@ public class AppManager extends Application {
 
     private static final Interceptor mCacheControlInterceptor = new Interceptor() {
         @Override
-        public okhttp3.Response intercept(Chain chain) throws IOException {
+        public Response intercept(Chain chain) throws IOException {
             Request request = chain.request();
 
             // Add Cache Control only for GET methods
             if (request.method().equals("GET")) {
                 if (!ConnectivityHelper.isConnected()) {
-                    request.newBuilder()
-                            .header("Cache-Control", "only-if-cached")
+                    // 4 weeks stale
+                    request = request.newBuilder()
+                            .header("Cache-Control", "public, max-stale=2419200")
                             .build();
                 }
             }
 
-            okhttp3.Response originalResponse = chain.proceed(request);
-
-            // Re-write response CC header to force use of cache
+            Response originalResponse = chain.proceed(request);
             return originalResponse.newBuilder()
-                    //.header("Cache-Control", "public, max-age=40*60*60*24") // save cache for 40 days (No need to interfere with the servers headers)
-                    .header("Cache-Control", "public")
+                    .header("Cache-Control", "max-age=600")
                     .build();
-
         }
     };
+
+//    private static final Interceptor mCacheControlInterceptor = new Interceptor() {
+//        @Override
+//        public okhttp3.Response intercept(Chain chain) throws IOException {
+//            Request request = chain.request();
+//
+//            // Add Cache Control only for GET methods
+//            if (request.method().equals("GET")) {
+//                if (!ConnectivityHelper.isConnected()) {
+//                    request.newBuilder()
+//                            .header("Cache-Control", "only-if-cached")
+//                            .build();
+//                }
+//            }
+//
+//            okhttp3.Response originalResponse = chain.proceed(request);
+//
+//            // Re-write response CC header to force use of cache
+//            return originalResponse.newBuilder()
+//                    //.header("Cache-Control", "public, max-age=40*60*60*24") // save cache for 40 days (No need to interfere with the servers headers)
+//                    .header("Cache-Control", "public")
+//                    .build();
+//
+//        }
+//    };
 }
