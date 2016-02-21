@@ -36,7 +36,7 @@ public class YnetRecyclerViewAdapter extends RecyclerView.Adapter<YnetRecyclerVi
         this.originalItems = rss.getChannel().getItems();
         //copy using json serialization and deserialization.
         //TODO:this can be more efficiently done with Parcelable interface, but will add tons of code.
-        this.adapterLocalItems = (Rss.fromJson(rss.json())).getChannel().getItems();
+        this.adapterLocalItems = (Rss.fromJson(rss.json())).getChannel().getItems(); //use this with generics
 
     }
 
@@ -158,7 +158,7 @@ public class YnetRecyclerViewAdapter extends RecyclerView.Adapter<YnetRecyclerVi
 
         final List<Item> filteredItemsList = new ArrayList<>();
         for (Item item : originalItems) {
-            final String text = item.getTitle().toLowerCase();
+            final String text = item.getTitle().toLowerCase(); //TODO: this is the only place were we reference the specific item class (title) - we can go with Comparable for the items and that's generic
             if (text.contains(query)) {
                 filteredItemsList.add(item);
             }
@@ -178,12 +178,6 @@ public class YnetRecyclerViewAdapter extends RecyclerView.Adapter<YnetRecyclerVi
         if (recyclerView != null) {
             recyclerView.scrollToPosition(0);
         }
-    }
-
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-        this.recyclerView = recyclerView;
     }
 
     public void refreshData(Rss rss) {

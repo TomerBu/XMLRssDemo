@@ -24,6 +24,7 @@ import com.example.tomerbuzaglo.xmlrssdemo.eventbus.BusProvider;
 import com.example.tomerbuzaglo.xmlrssdemo.eventbus.YnetEvent;
 import com.example.tomerbuzaglo.xmlrssdemo.model.Item;
 import com.example.tomerbuzaglo.xmlrssdemo.rssapi.YnetRssApi;
+import com.example.tomerbuzaglo.xmlrssdemo.utils.ConnectivityHelper;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
@@ -129,6 +130,11 @@ public class MainActivity extends AppCompatActivity {
         return scaleAndAlpahAdapter;
     }
 
+    @Override
+    protected void onResume() {
+        ConnectivityHelper.registerDefault(this);
+        super.onResume();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
