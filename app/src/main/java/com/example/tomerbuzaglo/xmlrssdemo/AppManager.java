@@ -73,29 +73,4 @@ public class AppManager extends Application {
                     .build();
         }
     };
-
-//    private static final Interceptor mCacheControlInterceptor = new Interceptor() {
-//        @Override
-//        public okhttp3.Response intercept(Chain chain) throws IOException {
-//            Request request = chain.request();
-//
-//            // Add Cache Control only for GET methods
-//            if (request.method().equals("GET")) {
-//                if (!ConnectivityHelper.isConnected()) {
-//                    request.newBuilder()
-//                            .header("Cache-Control", "only-if-cached")
-//                            .build();
-//                }
-//            }
-//
-//            okhttp3.Response originalResponse = chain.proceed(request);
-//
-//            // Re-write response CC header to force use of cache
-//            return originalResponse.newBuilder()
-//                    //.header("Cache-Control", "public, max-age=40*60*60*24") // save cache for 40 days (No need to interfere with the servers headers)
-//                    .header("Cache-Control", "public")
-//                    .build();
-//
-//        }
-//    };
 }
